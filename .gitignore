@@ -1,0 +1,12 @@
+
+*.tfstate
+*.tfstate.backup
+*.hcl
+.terraform/
+.terraform.lock.hcl
+.terraform.tfstate
+.terraform.tfstate.backup
+.terraform/environment
+.terraform/modules
+.terraform/terraform.tfstate
+.terraform/terraform.tfstate.backup
