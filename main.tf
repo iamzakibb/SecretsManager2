@@ -4,9 +4,7 @@ data "aws_region" "current" {}
 locals {
   current_user_arn = data.aws_caller_identity.current.arn
 }
-# -------------------------------------------------------------------
-# KMS Key (Encrypts Secrets)
-# -------------------------------------------------------------------
+
 resource "aws_kms_key" "secrets_kms_key" {
   description             = "KMS key for encrypting secrets"
   enable_key_rotation     = true
