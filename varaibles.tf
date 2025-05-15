@@ -5,3 +5,6 @@ variable "nic2_connection_string" {
   description = "value for NIC2 database connection string"
   
 }
+variable "required_tags" {
+  
+}
