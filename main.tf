@@ -34,6 +34,14 @@ resource "aws_kms_key" "secrets_kms_key" {
         ],
         Resource  = "*"
       },
+      {
+      Sid       = "AllowDMSDecryptAccess",
+      Effect    = "Allow",
+      Principal ={ AWS = data.aws_caller_identity.current.arn },
+      Action    = ["kms:Decrypt", "kms:DescribeKey"],
+      Resource  = "*"
+    },
+    
       # Security boundary
       {
         Sid       = "DenyExternalAccess",
