@@ -12,7 +12,7 @@ resource "aws_kms_key" "secrets_kms_key" {
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
-      # Root account full access
+     
       {
         Sid       = "EnableRootPermissions",
         Effect    = "Allow",
@@ -22,26 +22,19 @@ resource "aws_kms_key" "secrets_kms_key" {
       },
       
       {
-        Sid       = "Allow  CRUD",
+        Sid       = "AllowKeyManagement",
         Effect    = "Allow",
-        Principal = { AWS = data.aws_caller_identity.current.arn }, 
+        Principal = { AWS = data.aws_caller_identity.current.arn },
         Action    = [
           "kms:Encrypt",
           "kms:Decrypt",
           "kms:ReEncrypt*",
           "kms:GenerateDataKey*",
-          "kms:DescribeKey"
+          "kms:DescribeKey",
+          "kms:PutKeyPolicy" 
         ],
         Resource  = "*"
       },
-      {
-      Sid       = "AllowDMSDecryptAccess",
-      Effect    = "Allow",
-      Principal ={ AWS = data.aws_caller_identity.current.arn },
-      Action    = ["kms:Decrypt", "kms:DescribeKey"],
-      Resource  = "*"
-    },
-    
       # Security boundary
       {
         Sid       = "DenyExternalAccess",
@@ -53,7 +46,7 @@ resource "aws_kms_key" "secrets_kms_key" {
           ArnNotLike = {
             "aws:PrincipalArn" = [
               "arn:aws-us-gov:iam::${data.aws_caller_identity.current.account_id}:root",
-              data.aws_caller_identity.current.arn  # Deny everyone except root and  current user
+              data.aws_caller_identity.current.arn
             ]
           }
         }
