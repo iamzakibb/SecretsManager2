@@ -20,9 +20,6 @@ resource "aws_iam_role" "kms_secrets_admin" {
   })
 }
 
-# -------------------------------------------------------------------
-# KMS Key with Explicit Deny Rules
-# -------------------------------------------------------------------
 resource "aws_kms_key" "secrets_kms_key" {
   description             = "KMS key for encrypting secrets"
   enable_key_rotation     = true
@@ -30,7 +27,7 @@ resource "aws_kms_key" "secrets_kms_key" {
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
-     
+      # 1. Root account full access (break-glass)
       {
         Sid       = "EnableRootPermissions",
         Effect    = "Allow",
@@ -38,15 +35,18 @@ resource "aws_kms_key" "secrets_kms_key" {
         Action    = "kms:*",
         Resource  = "*"
       },
-      # 2. Admin role full access
+      # 2. Admin role permissions (explicitly include PutKeyPolicy)
       {
         Sid       = "AllowAdminAccess",
         Effect    = "Allow",
         Principal = { AWS = aws_iam_role.kms_secrets_admin.arn },
-        Action    = "kms:*",
+        Action    = [
+          "kms:PutKeyPolicy",  # Explicitly allow policy updates
+          "kms:*"
+        ],
         Resource  = "*"
       },
-      # 3. Explicit deny all others
+      # 3. Deny all others
       {
         Sid       = "DenyAllExceptRootAndAdmin",
         Effect    = "Deny",
@@ -65,7 +65,6 @@ resource "aws_kms_key" "secrets_kms_key" {
     ]
   })
 }
-
 # -------------------------------------------------------------------
 # Secrets (Connection Strings) with Deny Rules
 # -------------------------------------------------------------------
