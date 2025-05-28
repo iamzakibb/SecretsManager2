@@ -39,7 +39,7 @@ resource "aws_kms_key" "secrets_kms_key" {
       {
         Sid       = "AllowAdminAccess",
         Effect    = "Allow",
-        Principal = { AWS = aws_iam_role.kms_secrets_admin.arn },
+        Principal = { AWS = "arn:aws-us-gov:iam::${data.aws_caller_identity.current.account_id}:role/${aws_iam_role.kms_secrets_admin.name}"},
         Action    = [
           "kms:PutKeyPolicy",  # Explicitly allow policy updates
           "kms:*"
