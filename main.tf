@@ -27,7 +27,7 @@ resource "aws_kms_key" "secrets_kms_key" {
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
-      # 1. Root account full access (break-glass)
+     
       {
         Sid       = "EnableRootPermissions",
         Effect    = "Allow",
@@ -40,10 +40,7 @@ resource "aws_kms_key" "secrets_kms_key" {
         Sid       = "AllowAdminAccess",
         Effect    = "Allow",
         Principal = { AWS = "arn:aws-us-gov:iam::${data.aws_caller_identity.current.account_id}:role/${aws_iam_role.kms_secrets_admin.name}"},
-        Action    = [
-          "kms:PutKeyPolicy",  # Explicitly allow policy updates
-          "kms:*"
-        ],
+        Action    = ["kms:Decrypt", "kms:DescribeKey"],
         Resource  = "*"
       },
       # 3. Deny all others
@@ -57,7 +54,7 @@ resource "aws_kms_key" "secrets_kms_key" {
           ArnNotLike = {
             "aws:PrincipalArn" = [
               "arn:aws-us-gov:iam::${data.aws_caller_identity.current.account_id}:root",
-              aws_iam_role.kms_secrets_admin.arn
+              "arn:aws-us-gov:iam::${data.aws_caller_identity.current.account_id}:role/*"
             ]
           }
         }
