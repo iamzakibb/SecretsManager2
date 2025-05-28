@@ -77,29 +77,62 @@ resource "aws_secretsmanager_secret" "nic_connection" {
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
+      # Allow client full CRUD
       {
-        Sid    = "AllowAdminAccess",
+        Sid    = "AllowClientCRUD",
         Effect = "Allow",
-        Principal = { AWS = aws_iam_role.kms_secrets_admin.arn },
-        Action = "secretsmanager:*",
+        Principal = { AWS = "arn:aws-us-gov:iam::${data.aws_caller_identity.current.account_id}:role/${aws_iam_role.kms_secrets_admin.name}"},
+        Action = [
+          "secretsmanager:CreateSecret",
+          "secretsmanager:UpdateSecret",
+          "secretsmanager:DeleteSecret",
+          "secretsmanager:PutSecretValue",
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:DescribeSecret"
+        ],
         Resource = "*"
-      },
-      {
-        Sid    = "DenyAllExceptAdmin",
-        Effect = "Deny",
-        Principal = "*",
-        Action = "secretsmanager:*",
-        Resource = "*",
-        Condition = {
-          ArnNotLike = {
-            "aws:PrincipalArn" = [
-              aws_iam_role.kms_secrets_admin.arn
-            ]
-          }
-        }
       }
     ]
   })
 }
 
-# (Keep the secret_version resources same as before)
+resource "aws_secretsmanager_secret_version" "nic_connection_value" {
+  secret_id     = aws_secretsmanager_secret.nic_connection.id
+  secret_string = jsonencode({
+    NIC2 = var.nic2_connection_string
+  })
+}
+
+resource "aws_secretsmanager_secret" "fssa_common" {
+  name        = "FSSA_COMMON"
+  kms_key_id  = aws_kms_key.secrets_kms_key.arn
+  description = "FSSA_COMMON database connection string"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      # Allow client full CRUD
+      {
+        Sid    = "AllowClientCRUD",
+        Effect = "Allow",
+       Principal = { AWS = "arn:aws-us-gov:iam::${data.aws_caller_identity.current.account_id}:role/${aws_iam_role.kms_secrets_admin.name}"},
+        Action = [
+          "secretsmanager:CreateSecret",
+          "secretsmanager:UpdateSecret",
+          "secretsmanager:DeleteSecret",
+          "secretsmanager:PutSecretValue",
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:DescribeSecret"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_secretsmanager_secret_version" "fssa_common_value" {
+  secret_id     = aws_secretsmanager_secret.fssa_common.id
+  secret_string = jsonencode({
+    FSSA_COMMON = var.fdr_prod_connection_string
+  })
+}
