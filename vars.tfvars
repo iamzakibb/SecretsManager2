@@ -1,2 +1,5 @@
 fdr_prod_connection_string = "Data Source=m1-fdrsqlp.frb.gov;Initial Catalog=FDR;Integrated Security=true"
 nic2_connection_string = "Data Source=MSSNARIPAPP.frb.gov;initial Catalog=nic2_Application;Integrated Security=true"
+username      = "infobank"
+password      = "S361n0)ksja,made"
+connection_string = "sg-07e4f5ad51341741b"

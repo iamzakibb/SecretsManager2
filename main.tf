@@ -133,3 +133,38 @@ resource "aws_secretsmanager_secret_version" "fssa_common_value" {
     FSSA_COMMON = var.fdr_prod_connection_string
   })
 }
+
+resource "aws_secretsmanager_secret" "credentials" {
+  name        = "Credentials"
+  kms_key_id  = aws_kms_key.secrets_kms_key.arn
+  description = "Contains username, password, and connection string"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Sid    = "AllowAdminAccess",
+        Effect = "Allow",
+        Principal = { 
+          AWS = "arn:aws-us-gov:iam::${data.aws_caller_identity.current.account_id}:role/${aws_iam_role.kms_secrets_admin.name}"
+        },
+        Action = [
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:DescribeSecret",
+          "secretsmanager:PutSecretValue",
+          "secretsmanager:UpdateSecret"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_secretsmanager_secret_version" "credentials_value" {
+  secret_id = aws_secretsmanager_secret.credentials.id
+  secret_string = jsonencode({
+    username         = var.username       
+    password         = var.password       
+    connection_string = var.connection_string 
+  })
+}
