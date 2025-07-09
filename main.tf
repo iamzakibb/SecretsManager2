@@ -103,16 +103,15 @@ resource "aws_secretsmanager_secret_version" "nic_connection_value" {
 resource "aws_secretsmanager_secret" "fssa_common" {
   name        = "FSSA_COMMON"
   kms_key_id  = aws_kms_key.secrets_kms_key.arn
-  description = "FSSA_COMMON database connection string"
+  description = "Contains FSSA_COMMON credentials"
 
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
-      # Allow client full CRUD
       {
         Sid    = "AllowClientCRUD",
         Effect = "Allow",
-       Principal = { AWS = "arn:aws-us-gov:iam::${data.aws_caller_identity.current.account_id}:role/${aws_iam_role.kms_secrets_admin.name}"},
+        Principal = { AWS = "arn:aws-us-gov:iam::${data.aws_caller_identity.current.account_id}:role/${aws_iam_role.kms_secrets_admin.name}"},
         Action = [
           "secretsmanager:CreateSecret",
           "secretsmanager:UpdateSecret",
@@ -128,9 +127,55 @@ resource "aws_secretsmanager_secret" "fssa_common" {
 }
 
 resource "aws_secretsmanager_secret_version" "fssa_common_value" {
-  secret_id     = aws_secretsmanager_secret.fssa_common.id
+  secret_id = aws_secretsmanager_secret.fssa_common.id
   secret_string = jsonencode({
-    FSSA_COMMON = var.fdr_prod_connection_string
+    
+    FSSA_COMMON = {
+      HostName = var.fssa_common_hostname
+      UserName = var.fssa_common_username
+      Password = var.fssa_common_password
+    }
+  })
+}
+
+
+resource "aws_secretsmanager_secret" "okta" {
+  name        = "Okta_Credentials"
+  kms_key_id  = aws_kms_key.secrets_kms_key.arn
+  description = "Contains Okta  credentials"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Sid    = "AllowClientCRUD",
+        Effect = "Allow",
+        Principal = { AWS = "arn:aws-us-gov:iam::${data.aws_caller_identity.current.account_id}:role/${aws_iam_role.kms_secrets_admin.name}"},
+        Action = [
+          "secretsmanager:CreateSecret",
+          "secretsmanager:UpdateSecret",
+          "secretsmanager:DeleteSecret",
+          "secretsmanager:PutSecretValue",
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:DescribeSecret"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_secretsmanager_secret_version" "okta_value" {
+  secret_id = aws_secretsmanager_secret.okta.id
+  secret_string = jsonencode({
+    Okta = {
+      Domain                = var.okta_domain
+      ClientId              = var.okta_client_id
+      ClientSecret          = var.okta_client_secret
+      AuthorizationLevelId  = var.okta_authorization_level_id
+      CallbackPath          = var.okta_callback_path
+    }
+    
   })
 }
 
