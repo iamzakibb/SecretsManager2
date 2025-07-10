@@ -47,27 +47,27 @@ variable "fssa_common_password" {
   type        = string
   sensitive   = true
 }
-variable "nic2_connection_string" {
-  description = "value for NIC2 database connection string"
+# variable "nic2_connection_string" {
+#   description = "value for NIC2 database connection string"
   
-}
-variable "username" {
+# }
+# variable "username" {
  
-  type        = string
-  sensitive   = true
-}
+#   type        = string
+#   sensitive   = true
+# }
 
-variable "password" {
+# variable "password" {
   
-  type        = string
-  sensitive   = true
-}
+#   type        = string
+#   sensitive   = true
+# }
 
-variable "connection_string" {
-  description = " connection string"
-  type        = string
-  sensitive   = true
-}
+# variable "connection_string" {
+#   description = " connection string"
+#   type        = string
+#   sensitive   = true
+# }
 variable "required_tags" {
   
 }

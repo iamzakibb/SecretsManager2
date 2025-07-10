@@ -62,43 +62,9 @@ resource "aws_kms_key" "secrets_kms_key" {
     ]
   })
 }
-# -------------------------------------------------------------------
-# Secrets (Connection Strings) with Deny Rules
-# -------------------------------------------------------------------
-# NIC2 Connection String
-resource "aws_secretsmanager_secret" "nic_connection" {
-  name        = "NIC_Connection_String"
-  kms_key_id  = aws_kms_key.secrets_kms_key.arn
-  description = "NIC2 database connection string"
 
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      # Allow client full CRUD
-      {
-        Sid    = "AllowClientCRUD",
-        Effect = "Allow",
-        Principal = { AWS = "arn:aws-us-gov:iam::${data.aws_caller_identity.current.account_id}:role/${aws_iam_role.kms_secrets_admin.name}"},
-        Action = [
-          "secretsmanager:CreateSecret",
-          "secretsmanager:UpdateSecret",
-          "secretsmanager:DeleteSecret",
-          "secretsmanager:PutSecretValue",
-          "secretsmanager:GetSecretValue",
-          "secretsmanager:DescribeSecret"
-        ],
-        Resource = "*"
-      }
-    ]
-  })
-}
 
-resource "aws_secretsmanager_secret_version" "nic_connection_value" {
-  secret_id     = aws_secretsmanager_secret.nic_connection.id
-  secret_string = jsonencode({
-    NIC2 = var.nic2_connection_string
-  })
-}
+
 
 resource "aws_secretsmanager_secret" "fssa_common" {
   name        = "FSSA_COMMON"
@@ -179,37 +145,3 @@ resource "aws_secretsmanager_secret_version" "okta_value" {
   })
 }
 
-resource "aws_secretsmanager_secret" "credentials" {
-  name        = "Credentials"
-  kms_key_id  = aws_kms_key.secrets_kms_key.arn
-  description = "Contains username, password, and connection string"
-
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Sid    = "AllowAdminAccess",
-        Effect = "Allow",
-        Principal = { 
-          AWS = "arn:aws-us-gov:iam::${data.aws_caller_identity.current.account_id}:role/${aws_iam_role.kms_secrets_admin.name}"
-        },
-        Action = [
-          "secretsmanager:GetSecretValue",
-          "secretsmanager:DescribeSecret",
-          "secretsmanager:PutSecretValue",
-          "secretsmanager:UpdateSecret"
-        ],
-        Resource = "*"
-      }
-    ]
-  })
-}
-
-resource "aws_secretsmanager_secret_version" "credentials_value" {
-  secret_id = aws_secretsmanager_secret.credentials.id
-  secret_string = jsonencode({
-    username         = var.username       
-    password         = var.password       
-    connection_string = var.connection_string 
-  })
-}
