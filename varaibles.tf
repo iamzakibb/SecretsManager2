@@ -1,51 +1,34 @@
 # Okta Configuration
-variable "okta_domain" {
-  description = "Okta domain URL"
-  type        = string
-  sensitive   = true
+variable "domain" {
+ 
+}
+variable "client_id" {
+
 }
 
-variable "okta_client_id" {
-  description = "Okta client ID"
-  type        = string
-  sensitive   = true
+variable "client_secret" {
+  
 }
 
-variable "okta_client_secret" {
-  description = "Okta client secret"
-  type        = string
-  sensitive   = true
+variable "authorization_level_id" {
+ 
 }
 
-variable "okta_authorization_level_id" {
-  description = "Okta authorization level ID"
-  type        = string
-  sensitive   = true
-}
-
-variable "okta_callback_path" {
-  description = "Okta callback path"
-  type        = string
-  sensitive   = true
+variable "callback_path" {
+ 
 }
 
 # FSSA_COMMON Configuration
-variable "fssa_common_hostname" {
-  description = "FSSA_COMMON database hostname"
-  type        = string
-  sensitive   = true
+variable "common_hostname" {
+  
 }
 
-variable "fssa_common_username" {
-  description = "FSSA_COMMON database username"
-  type        = string
-  sensitive   = true
+variable "common_username" {
+  
 }
 
-variable "fssa_common_password" {
-  description = "FSSA_COMMON database password"
-  type        = string
-  sensitive   = true
+variable "common_password" {
+ 
 }
 # variable "nic2_connection_string" {
 #   description = "value for NIC2 database connection string"

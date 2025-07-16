@@ -97,9 +97,9 @@ resource "aws_secretsmanager_secret_version" "fssa_common_value" {
   secret_string = jsonencode({
     
     FSSA_COMMON = {
-      HostName = var.fssa_common_hostname
-      UserName = var.fssa_common_username
-      Password = var.fssa_common_password
+      HostName = var.common_hostname
+      UserName = var.common_username
+      Password = var.common_password
     }
   })
 }
@@ -135,11 +135,11 @@ resource "aws_secretsmanager_secret_version" "okta_value" {
   secret_id = aws_secretsmanager_secret.okta.id
   secret_string = jsonencode({
     Okta = {
-      Domain                = var.okta_domain
-      ClientId              = var.okta_client_id
-      ClientSecret          = var.okta_client_secret
-      AuthorizationLevelId  = var.okta_authorization_level_id
-      CallbackPath          = var.okta_callback_path
+      Domain                = var.domain
+      ClientId              = var.client_id
+      ClientSecret          = var.client_secret
+      AuthorizationLevelId  = var.authorization_level_id
+      CallbackPath          = var.callback_path
     }
     
   })
