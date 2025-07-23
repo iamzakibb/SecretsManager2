@@ -64,7 +64,7 @@ resource "aws_kms_key" "secrets_kms_key" {
 }
 
 
-resource "aws_secretsmanager_secret" "Okta_Credentials" {
+resource "aws_secretsmanager_secret" "Okta_Creds" {
   name        = "Okta_Credentials"
   kms_key_id  = aws_kms_key.secrets_kms_key.arn
   description = "Contains Okta  credentials"
