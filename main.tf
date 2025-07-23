@@ -21,7 +21,7 @@ resource "aws_iam_role" "kms_secrets_admin" {
 }
 
 resource "aws_kms_key" "secrets_kms_key" {
-  description             = "KMS key for encrypting secrets"
+  description             = "KMS key for encrypting secrets for test environment"
   enable_key_rotation     = true
 
   policy = jsonencode({
