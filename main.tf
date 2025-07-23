@@ -92,7 +92,7 @@ resource "aws_secretsmanager_secret" "Okta_Creds" {
 }
 
 resource "aws_secretsmanager_secret_version" "okta_value" {
-  secret_id = aws_secretsmanager_secret.Okta_Credentials.id
+  secret_id = aws_secretsmanager_secret.Okta_Creds.id
   secret_string = jsonencode({
     Okta_Credentials = {
       Domain                = var.domain
