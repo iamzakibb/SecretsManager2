@@ -4,7 +4,7 @@ data "aws_caller_identity" "current" {}
 # IAM Role for KMS/Secrets Management
 # -------------------------------------------------------------------
 resource "aws_iam_role" "kms_secrets_admin" {
-  name = "KMSSecretsAdminRole"
+  name = "KMSSecretsAdminRoleTestEnv"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -35,7 +35,7 @@ resource "aws_kms_key" "secrets_kms_key" {
         Action    = "kms:*",
         Resource  = "*"
       },
-      # 2. Admin role permissions (explicitly include PutKeyPolicy)
+      # 2. Admin role permissions 
       {
         Sid       = "AllowAdminAccess",
         Effect    = "Allow",
@@ -64,48 +64,7 @@ resource "aws_kms_key" "secrets_kms_key" {
 }
 
 
-
-
-resource "aws_secretsmanager_secret" "fssa_common" {
-  name        = "FSSA_COMMON"
-  kms_key_id  = aws_kms_key.secrets_kms_key.arn
-  description = "Contains FSSA_COMMON credentials"
-
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Sid    = "AllowClientCRUD",
-        Effect = "Allow",
-        Principal = { AWS = "arn:aws-us-gov:iam::${data.aws_caller_identity.current.account_id}:role/${aws_iam_role.kms_secrets_admin.name}"},
-        Action = [
-          "secretsmanager:CreateSecret",
-          "secretsmanager:UpdateSecret",
-          "secretsmanager:DeleteSecret",
-          "secretsmanager:PutSecretValue",
-          "secretsmanager:GetSecretValue",
-          "secretsmanager:DescribeSecret"
-        ],
-        Resource = "*"
-      }
-    ]
-  })
-}
-
-resource "aws_secretsmanager_secret_version" "fssa_common_value" {
-  secret_id = aws_secretsmanager_secret.fssa_common.id
-  secret_string = jsonencode({
-    
-    FSSA_COMMON = {
-      HostName = var.common_hostname
-      UserName = var.common_username
-      Password = var.common_password
-    }
-  })
-}
-
-
-resource "aws_secretsmanager_secret" "okta" {
+resource "aws_secretsmanager_secret" "Okta_Credentials" {
   name        = "Okta_Credentials"
   kms_key_id  = aws_kms_key.secrets_kms_key.arn
   description = "Contains Okta  credentials"
@@ -132,9 +91,9 @@ resource "aws_secretsmanager_secret" "okta" {
 }
 
 resource "aws_secretsmanager_secret_version" "okta_value" {
-  secret_id = aws_secretsmanager_secret.okta.id
+  secret_id = aws_secretsmanager_secret.Okta_Credentials.id
   secret_string = jsonencode({
-    Okta = {
+    Okta_Credentials = {
       Domain                = var.domain
       ClientId              = var.client_id
       ClientSecret          = var.client_secret

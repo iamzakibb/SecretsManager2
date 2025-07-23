@@ -1,3 +1,7 @@
+variable "required_tags" {
+  
+}
+
 # Okta Configuration
 variable "domain" {
  
@@ -18,18 +22,7 @@ variable "callback_path" {
  
 }
 
-# FSSA_COMMON Configuration
-variable "common_hostname" {
-  
-}
 
-variable "common_username" {
-  
-}
-
-variable "common_password" {
- 
-}
 # variable "nic2_connection_string" {
 #   description = "value for NIC2 database connection string"
   
@@ -51,6 +44,3 @@ variable "common_password" {
 #   type        = string
 #   sensitive   = true
 # }
-variable "required_tags" {
-  
-}
