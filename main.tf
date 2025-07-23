@@ -68,6 +68,7 @@ resource "aws_secretsmanager_secret" "Okta_Credentials_TestEnv" {
   name        = "Okta_Credentials"
   kms_key_id  = aws_kms_key.secrets_kms_key.arn
   description = "Contains Okta  credentials"
+  recovery_window_in_days = 0
 
   policy = jsonencode({
     Version = "2012-10-17",
