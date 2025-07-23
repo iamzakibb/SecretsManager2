@@ -64,7 +64,7 @@ resource "aws_kms_key" "secrets_kms_key" {
 }
 
 
-resource "aws_secretsmanager_secret" "Okta_Credentials_TestEnv" {
+resource "aws_secretsmanager_secret" "Okta_Credentials" {
   name        = "Okta_Credentials"
   kms_key_id  = aws_kms_key.secrets_kms_key.arn
   description = "Contains Okta  credentials"
@@ -92,7 +92,7 @@ resource "aws_secretsmanager_secret" "Okta_Credentials_TestEnv" {
 }
 
 resource "aws_secretsmanager_secret_version" "okta_value" {
-  secret_id = aws_secretsmanager_secret.Okta_Credentials_TestEnv.id
+  secret_id = aws_secretsmanager_secret.Okta_Credentials.id
   secret_string = jsonencode({
     Okta_Credentials = {
       Domain                = var.domain
