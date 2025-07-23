@@ -105,10 +105,11 @@ resource "aws_secretsmanager_secret_version" "fssa_common_value" {
 }
 
 
-resource "aws_secretsmanager_secret" "okta" {
+resource "aws_secretsmanager_secret" "Okta_Creds" {
   name        = "Okta_Credentials"
   kms_key_id  = aws_kms_key.secrets_kms_key.arn
   description = "Contains Okta  credentials"
+   recovery_window_in_days = 0
 
   policy = jsonencode({
     Version = "2012-10-17",
@@ -132,7 +133,7 @@ resource "aws_secretsmanager_secret" "okta" {
 }
 
 resource "aws_secretsmanager_secret_version" "okta_value" {
-  secret_id = aws_secretsmanager_secret.okta.id
+  secret_id = aws_secretsmanager_secret.Okta_Creds.id
   secret_string = jsonencode({
     Okta = {
       Domain                = var.domain
