@@ -65,7 +65,7 @@ resource "aws_kms_key" "secrets_kms_key" {
 
 
 resource "aws_secretsmanager_secret" "Okta_Creds" {
-  name        = "Okta_Credentials"
+  name        = "Okta_Creds"
   kms_key_id  = aws_kms_key.secrets_kms_key.arn
   description = "Contains Okta  credentials"
   recovery_window_in_days = 0
@@ -94,7 +94,7 @@ resource "aws_secretsmanager_secret" "Okta_Creds" {
 resource "aws_secretsmanager_secret_version" "okta_value" {
   secret_id = aws_secretsmanager_secret.Okta_Creds.id
   secret_string = jsonencode({
-    Okta_Credentials = {
+    Okta_Creds = {
       Domain                = var.domain
       ClientId              = var.client_id
       ClientSecret          = var.client_secret
